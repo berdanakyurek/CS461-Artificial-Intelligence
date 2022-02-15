@@ -115,6 +115,10 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     # list used to avoid unnecessary expansion
     expanded = []
     while True:
+
+        # If no items to pop, there are no solutions. Return -1 as error code
+        if pq.isEmpty():
+            return -1
         # Get the most prior item
         item = pq.pop()
 
