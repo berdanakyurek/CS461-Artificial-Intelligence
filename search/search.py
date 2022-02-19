@@ -112,21 +112,19 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     # Create and initialize pq by adding start state
     pq = util.PriorityQueue()
     pq.push(([problem.getStartState()], []), heuristic(problem.getStartState(), problem))
-    # list used to avoid unnecessary expansion
-    expanded = []
-    while True:
+    # set for graph search.
+    expanded = set()
+    while not pq.isEmpty():
 
-        # If no items to pop, there are no solutions. Return -1 as error code
-        if pq.isEmpty():
-            return -1
         # Get the most prior item
         item = pq.pop()
+
 
         # If it is expanded previously, do not expand again
         if item[0][-1] in expanded:
             continue
         # Otherwise, add it to expanded list
-        expanded.append(item[0][-1])
+        expanded.add(item[0][-1])
 
         # If item is the goal, return the path
         if(problem.isGoalState(item[0][-1])):
@@ -149,6 +147,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
             # Push new path back to the pq
             pq.push((new_item, new_sequence), new_cost)
 
+    return -1
     util.raiseNotDefined()
 
 
