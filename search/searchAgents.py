@@ -341,7 +341,7 @@ class CornersProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
-                tmp_foods = state[1]
+                tmp_foods = state[1].deepCopy()
                 tmp_foods[nextx][nexty] = False
                 new_state = ((nextx, nexty), tmp_foods)
                 successors.append((new_state, action, 1))
@@ -380,6 +380,20 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+
+    sumDist = 0
+    position = state[0]
+    cornerCount = 0
+    #print(state)
+    for cor in corners:
+        if state[1][cor[0]][cor[1]]:
+            cornerCount += 1
+            mnd = (position[0]-cor[0]) + abs(position[1]-cor[1])
+            sumDist += mnd
+    #print("h", shortestDist)
+    #print("cc", cornerCount)
+    return sumDist
+    #return shortestDist
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
