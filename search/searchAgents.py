@@ -380,20 +380,19 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-
-    sumDist = 0
+    # Longest distance to any corner with foods
+    longestDist = -1
     position = state[0]
-    cornerCount = 0
-    #print(state)
+
     for cor in corners:
         if state[1][cor[0]][cor[1]]:
-            cornerCount += 1
-            mnd = (position[0]-cor[0]) + abs(position[1]-cor[1])
-            sumDist += mnd
-    #print("h", shortestDist)
-    #print("cc", cornerCount)
-    return sumDist
-    #return shortestDist
+            mnd = abs(position[0]-cor[0]) + abs(position[1]-cor[1])
+            if longestDist == -1 or mnd > longestDist:
+                longestDist = mnd
+
+    if longestDist == -1:
+        longestDist = 0
+    return longestDist
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
