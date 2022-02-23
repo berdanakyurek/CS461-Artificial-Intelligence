@@ -92,7 +92,6 @@ def depthFirstSearch(problem: SearchProblem):
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-	# Usman Test 2 
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
@@ -120,7 +119,6 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
         # Get the most prior item
         item = pq.pop()
         print(item)
-        # Testing with Usman
         # If it is expanded previously, do not expand again
         if item[0][-1] in expanded:
             continue
