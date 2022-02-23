@@ -133,7 +133,6 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
         successors = problem.getSuccessors(item[0][-1])
 
         # Iterate over each successor
-        # Usman edited
         for succ in successors:
             # If successor is already visited in this path, ignore it
             if succ[0] in item[0]:
