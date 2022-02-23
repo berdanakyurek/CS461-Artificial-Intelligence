@@ -108,7 +108,7 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-
+    "*** YOUR CODE HERE ***"
     # Create and initialize pq by adding start state
     pq = util.PriorityQueue()
     pq.push(([problem.getStartState()], []), heuristic(problem.getStartState(), problem))
@@ -118,8 +118,8 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
 
         # Get the most prior item
         item = pq.pop()
-
-
+        print(item)
+        # Testing with Usman
         # If it is expanded previously, do not expand again
         if item[0][-1] in expanded:
             continue
