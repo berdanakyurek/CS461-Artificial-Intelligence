@@ -118,7 +118,7 @@ def depthFirstSearch(problem: SearchProblem):
             # Compute new path and new cost
             new_item = item[0] + [succ[0]]
             new_sequence = item[1] + [succ[1]]
-            new_cost =  problem.getCostOfActions(new_sequence) + 1
+            new_cost =  problem.getCostOfActions(new_sequence)
 
             # Push new path back to the pq
             pq.push((new_item, new_sequence))
@@ -160,7 +160,7 @@ def breadthFirstSearch(problem: SearchProblem):
             # Compute new path and new cost
             new_item = item[0] + [succ[0]]
             new_sequence = item[1] + [succ[1]]
-            new_cost =  problem.getCostOfActions(new_sequence) + 1
+            new_cost =  problem.getCostOfActions(new_sequence)
 
             # Push new path back to the pq
             pq.push((new_item, new_sequence))
