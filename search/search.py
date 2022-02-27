@@ -171,6 +171,44 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    pq = util.PriorityQueue()
+    pq.push(([problem.getStartState()], []), 0)
+    # set for graph search.
+    expanded = set()
+    while not pq.isEmpty():
+
+        # Get the most prior item
+        item = pq.pop()
+        #print(item)
+        # If it is expanded previously, do not expand again
+        if item[0][-1] in expanded:
+            continue
+        # Otherwise, add it to expanded list
+        expanded.add(item[0][-1])
+
+        # If item is the goal, return the path
+        if(problem.isGoalState(item[0][-1])):
+            return item[1]
+
+        # Find successors can be reached from the last state
+        successors = problem.getSuccessors(item[0][-1])
+
+        # Iterate over each successor
+        for succ in successors:
+            # If successor is already visited in this path, ignore it
+            if succ[0] in item[0]:
+                continue
+
+            # Compute new path and new cost
+            new_item = item[0] + [succ[0]]
+            new_sequence = item[1] + [succ[1]]
+            new_cost =  problem.getCostOfActions(new_sequence)
+
+            # Push new path back to the pq
+            pq.push((new_item, new_sequence), new_cost)
+
+    return -1
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
