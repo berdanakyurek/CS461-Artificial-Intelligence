@@ -487,6 +487,16 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    count = 0
+    maxDistance = 0
+    for i in range(foodGrid.width):
+        for j in  range(foodGrid.height):
+            if foodGrid[i][j]:
+                count += 1
+                dist = abs(i-position[0]) + abs(j-position[1])
+                if dist > maxDistance:
+                    maxDistance = dist
+    return maxDistance
     return 0
 
 class ClosestDotSearchAgent(SearchAgent):
