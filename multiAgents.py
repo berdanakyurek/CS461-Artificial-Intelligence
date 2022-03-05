@@ -189,6 +189,32 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
+        def innerHelper(gs, index, depth):
+            if gs.isWin() or gs.isLose() or depth == self.depth:
+                return (self.evaluationFunction(gs), None)
+
+            possible_actions = gs.getLegalActions(index)
+            utilities = []
+
+            if index+1 == gs.getNumAgents():
+                depth += 1
+            for act in possible_actions:
+                next_step =gs.generateSuccessor(index, act)
+                utilities.append(innerHelper(next_step, (index+1)% gs.getNumAgents(), depth)[0])
+            result = -1
+
+            if len(utilities) == 0:
+                return (self.evaluationFunction(gs), None)
+            if index == 0: # Pacman to move
+                result = (max(utilities), possible_actions[utilities.index(max(utilities))])
+            else:
+                result = (sum(utilities)/len(utilities), possible_actions[utilities.index(min(utilities))])
+
+            #print("result", index, result)
+            return result
+        outres = innerHelper(gameState, self.index, 0)
+        #print(outres)
+        return outres[1]
         util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState: GameState):
