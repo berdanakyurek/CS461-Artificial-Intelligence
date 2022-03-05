@@ -75,7 +75,26 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        import sys
+        foodList = newFood.asList() # List of all food available
+        closestFood = sys.maxsize   # Arbitrary max distance
+        
+        # To check for food that is closest
+        for food in foodList:
+            closestFood = min(closestFood, manhattanDistance(newPos, food))
+        
+        # To check for position of ghost
+        ghostPosition = successorGameState.getGhostPositions()
+        for ghost in ghostPosition:
+            closestGhost = manhattanDistance(newPos, ghost) 
+            # Safest distance while staying as close as possible
+            # Normally 2 turns away from the ghost as normal manhattan distance would be 2
+            # Considers the case if ghost is less than distance of 2
+            while closestGhost < 3:
+                return - sys.maxsize
+  
+        return successorGameState.getScore() + 1.0/closestFood
+
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
