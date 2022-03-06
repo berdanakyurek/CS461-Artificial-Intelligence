@@ -12,6 +12,7 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+from pickletools import floatnl
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -244,6 +245,34 @@ def betterEvaluationFunction(currentGameState: GameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
+
+    import sys
+
+    pacmanPosition = currentGameState.getPacmanPosition()
+    foodList = currentGameState.getFood().asList()
+    ghostPositions = currentGameState.getGhostPositions()
+    currentScore = currentGameState.getScore()
+    closestFood = sys.maxsize
+
+    #find closest food 
+    if foodList:
+        closestFood = min(list(map(lambda food: manhattanDistance(pacmanPosition, food), foodList)))
+
+    #check ghost position 2 or less
+    ghostNearby = True in list(map(lambda ghost: manhattanDistance(pacmanPosition, ghost) < 2, ghostPositions))
+
+    if ghostNearby:
+        return -sys.maxsize
+
+    capsulesLeft = len(currentGameState.getCapsules()) + 1
+    foodLeft = len(foodList) + 1
+
+    multipliers = [1.0, 2.0, 3.0]
+    params = [closestFood, capsulesLeft, foodLeft]
+
+    return currentScore + sum(m / p for m, p in zip(multipliers, params))
+
+
     util.raiseNotDefined()
 
 # Abbreviation
