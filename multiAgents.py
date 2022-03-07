@@ -12,8 +12,6 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
-from pickletools import floatnl
-import sys
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -185,11 +183,18 @@ class MinimaxAgent(MultiAgentSearchAgent):
         util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
+    """
+    Your minimax agent with alpha-beta pruning (question 3)
+    """
 
     def getAction(self, gameState: GameState):
-        
+        """
+        Returns the minimax action using self.depth and self.evaluationFunction
+        """
+        "*** YOUR CODE HERE ***"
+        import sys
         def minFunc(gameState, depth, id, alpha, beta):
-
+            import sys    
             posValue = ( sys.maxsize)  #positive biggest num
             if len(gameState.getLegalActions(id)) == 0:
               return (self.evaluationFunction(gameState), 0)
@@ -211,7 +216,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         def maxFunc(gameState, depth, alpha, beta):
 
-            
+            import sys
             negValuee = -( sys.maxsize) #negative biggest num
             if depth == self.depth or gameState.isWin() or gameState.isLose() or len(gameState.getLegalActions(0)) == 0:
                 return (self.evaluationFunction(gameState), 0)
