@@ -81,20 +81,19 @@ class ReflexAgent(Agent):
         closestFood = sys.maxsize   # Arbitrary max distance
         
         # To check for food that is closest
-        for food in foodList:
-            closestFood = min(closestFood, manhattanDistance(newPos, food))
-        
+        if foodList:
+            closestFood = min(list(map(lambda food: manhattanDistance(newPos, food), foodList)))
+
         # To check for position of ghost
-        ghostPosition = successorGameState.getGhostPositions()
-        for ghost in ghostPosition:
-            closestGhost = manhattanDistance(newPos, ghost) 
-            # Safest distance while staying as close as possible
-            # Normally 2 turns away from the ghost as normal manhattan distance would be 2
-            # Considers the case if ghost is less than distance of 2
-            while closestGhost < 3:
-                return - sys.maxsize
+        ghostPosition = successorGameState.getGhostPositions()    
+        # Safest distance while staying as close as possible
+        # Normally 2 turns away from the ghost as normal manhattan distance would be 2
+        # Considers the case if ghost is less than distance of 2
+        closestGhost = True in list(map(lambda ghost: manhattanDistance(newPos, ghost) < 3, ghostPosition))
+        if closestGhost:
+            return -sys.maxsize
   
-        return successorGameState.getScore() + 1.0/closestFood
+        return successorGameState.getScore() + 1/closestFood
 
 
 def scoreEvaluationFunction(currentGameState: GameState):
