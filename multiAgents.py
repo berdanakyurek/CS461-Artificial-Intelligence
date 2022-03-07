@@ -196,9 +196,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         def minFunc(gameState, depth, id, alpha, beta):
             import sys    
             posValue = ( sys.maxsize)  #positive biggest num
-            if len(gameState.getLegalActions(id)) == 0:
-              return (self.evaluationFunction(gameState), 0)
-            else:
+
+            if len(gameState.getLegalActions(id)) != 0:
                 for act in gameState.getLegalActions(id):
                     if (id+1 == gameState.getNumAgents()):
                         successor = maxFunc(gameState.generateSuccessor(id, act), depth + 1, alpha, beta)[0]
@@ -211,25 +210,29 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                         return (posValue, action)
 
                     beta = min(beta, posValue)
+            else:
+                return (self.evaluationFunction(gameState), 0)
 
-                return (posValue, action)
+            return (posValue, action)
 
         def maxFunc(gameState, depth, alpha, beta):
 
             import sys
             negValuee = -( sys.maxsize) #negative biggest num
-            if depth == self.depth or gameState.isWin() or gameState.isLose() or len(gameState.getLegalActions(0)) == 0:
-                return (self.evaluationFunction(gameState), 0)
-            else :
-                for thisAction in gameState.getLegalActions(0):
-                    successor = minFunc(gameState.generateSuccessor(0, thisAction), depth, 1, alpha, beta)[0]
+            
+                
+            if not (depth == self.depth or gameState.isWin() or gameState.isLose() or len(gameState.getLegalActions(0)) == 0):
+                for act in gameState.getLegalActions(0):
+                    successor = minFunc(gameState.generateSuccessor(0, act), depth, 1, alpha, beta)[0]
                     if (negValuee < successor):
-                        negValuee, action = successor, thisAction
+                        negValuee, action = successor, act
 
                     if (negValuee > beta):
                         return (negValuee, action)
 
                     alpha = max(alpha, negValuee)
+            else:
+                return (self.evaluationFunction(gameState), 0)
 
             return (negValuee, action)
 
