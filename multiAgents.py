@@ -13,6 +13,7 @@
 
 
 from pickletools import floatnl
+import sys
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -184,22 +185,58 @@ class MinimaxAgent(MultiAgentSearchAgent):
         util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
-    """
-    Your minimax agent with alpha-beta pruning (question 3)
-    """
 
     def getAction(self, gameState: GameState):
-        """
-        Returns the minimax action using self.depth and self.evaluationFunction
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        def minFunc(gameState, depth, id, alpha, beta):
+
+            posValue = ( sys.maxsize)  #positive biggest num
+            if len(gameState.getLegalActions(id)) == 0:
+              return (self.evaluationFunction(gameState), 0)
+            else:
+                for act in gameState.getLegalActions(id):
+                    if (id+1 == gameState.getNumAgents()):
+                        successor = maxFunc(gameState.generateSuccessor(id, act), depth + 1, alpha, beta)[0]
+                    else:
+                        successor = minFunc(gameState.generateSuccessor(id, act), depth,id +1, alpha, beta)[0]
+                    if (successor < posValue):
+                        posValue, action = successor, act
+
+                    if (posValue < alpha):
+                        return (posValue, action)
+
+                    beta = min(beta, posValue)
+
+                return (posValue, action)
+
+        def maxFunc(gameState, depth, alpha, beta):
+
+            
+            negValuee = -( sys.maxsize) #negative biggest num
+            if depth == self.depth or gameState.isWin() or gameState.isLose() or len(gameState.getLegalActions(0)) == 0:
+                return (self.evaluationFunction(gameState), 0)
+            else :
+                for thisAction in gameState.getLegalActions(0):
+                    successor = minFunc(gameState.generateSuccessor(0, thisAction), depth, 1, alpha, beta)[0]
+                    if (negValuee < successor):
+                        negValuee, action = successor, thisAction
+
+                    if (negValuee > beta):
+                        return (negValuee, action)
+
+                    alpha = max(alpha, negValuee)
+
+            return (negValuee, action)
+
+        
+
+        return maxFunc(gameState, 0, -( sys.maxsize), ( sys.maxsize))[1]
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
     """
-
+    
     def getAction(self, gameState: GameState):
         """
         Returns the expectimax action using self.depth and self.evaluationFunction
