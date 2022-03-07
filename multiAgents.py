@@ -241,7 +241,15 @@ def betterEvaluationFunction(currentGameState: GameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: 
+    <
+        Better evaluation function is implemented by considering the following state properties:
+            - closest food distance
+            - ghost distance (if the pacman is two blocks away from any ghost)
+            - number of food left in board
+            - number of capsules left in board
+        According to those properties, evaluation returns with their responding multipliers that have been initialized before.
+    >
     """
     "*** YOUR CODE HERE ***"
 
@@ -266,13 +274,10 @@ def betterEvaluationFunction(currentGameState: GameState):
     capsulesLeft = len(currentGameState.getCapsules()) + 1
     foodLeft = len(foodList) + 1
 
-    multipliers = [1.0, 2.0, 3.0]
-    params = [closestFood, capsulesLeft, foodLeft]
+    multipliers = [1.0, 3.0, 5.0]
+    params = [closestFood, foodLeft, capsulesLeft]
 
     return currentScore + sum(m / p for m, p in zip(multipliers, params))
-
-
-    util.raiseNotDefined()
 
 # Abbreviation
 better = betterEvaluationFunction
