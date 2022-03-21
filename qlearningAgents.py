@@ -41,9 +41,9 @@ class QLearningAgent(ReinforcementAgent):
     def __init__(self, **args):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
-        self.QValues = util.Counter()
 
         "*** YOUR CODE HERE ***"
+        self.QValues = util.Counter()
 
     def getQValue(self, state, action):
         """
@@ -64,20 +64,21 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        #print(state)
-        possibleActions = self.getLegalActions(state)
-        if len(possibleActions) == 0:
-            return 0.0
-
+        if len(self.getLegalActions(state)) == 0:
+          return 0.0
         max_action = None
-        for act in possibleActions:
-            qv = self.QValues[state, act]
-            if max_action == None or qv > max_action:
-                max_action = qv
+        
+        for act in self.getLegalActions(state):
+          qv = self.getQValue(state, act)
+          if max_action == None:
+            max_action = qv
+          elif qv > max_action:
+            max_action = qv
+        if max_action == None:
+          max_action = 0
         return max_action
 
-        util.raiseNotDefined()
-
+        
     def computeActionFromQValues(self, state):
         """
           Compute the best action to take in a state.  Note that if there
@@ -90,7 +91,6 @@ class QLearningAgent(ReinforcementAgent):
             return action
         return None
 
-        util.raiseNotDefined()
 
     def getAction(self, state):
         """
@@ -196,7 +196,7 @@ class ApproximateQAgent(PacmanQAgent):
         for i in features:
             prod += self.weights[i] * features[i]
         return prod
-        util.raiseNotDefined()
+
 
     def update(self, state, action, nextState, reward):
         """
@@ -210,7 +210,7 @@ class ApproximateQAgent(PacmanQAgent):
         for f in features:
             self.weights[f] += self.alpha * correction * features[f]
         return
-        util.raiseNotDefined()
+ 
 
 
     def final(self, state):
