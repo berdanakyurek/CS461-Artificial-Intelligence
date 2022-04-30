@@ -8,17 +8,16 @@ public class GameManager : MonoBehaviour
     private bool wallRotation = false;
 
     private RaycastHit hit;
-    public GameObject boardCube1;
-    public GameObject boardCube2;
-    public GameObject player1;
-    public GameObject player2;
+    public GameObject boardCube1, boardCube2;
+    private GameObject boardObject;
+    public GameObject player1Prefab, player2Prefab;
+    private GameObject player1, player2;
     public GameObject wall;
-    public GameObject boardObject;
+    
     public const int BOARD_SIZE = 9;
     public GameObject[,] board = new GameObject[BOARD_SIZE,BOARD_SIZE];
-    private bool wallPresent = false;
-    private GameObject wallPlaceHolder;
-
+    private Vector3 initialPlayer1Pos, initialPlayer2Pos;
+    
     private void InitializeBoard()
     {
         for (int i = 0; i < BOARD_SIZE; i++)
@@ -34,12 +33,12 @@ public class GameManager : MonoBehaviour
 
     private void InitializePlayers()
     {
-        Vector3 player1Pos = board[0, 4].transform.position;
-        player1Pos.z += -1;
-        Instantiate(player1, player1Pos, Quaternion.identity);
-        Vector3 player2Pos = board[8, 4].transform.position;
-        player2Pos.z += -1;
-        Instantiate(player2, player2Pos, Quaternion.identity);
+        initialPlayer1Pos = board[0, 4].transform.position;
+        initialPlayer1Pos.z += -1;
+        Instantiate(player1Prefab, initialPlayer1Pos, Quaternion.identity);
+        initialPlayer2Pos = board[BOARD_SIZE - 1, 4].transform.position;
+        initialPlayer2Pos.z += -1;
+        Instantiate(player2Prefab, initialPlayer2Pos, Quaternion.identity);
     }
     private Vector3 RoundHitPoint(Vector3 hitPoint)
     {
@@ -51,56 +50,46 @@ public class GameManager : MonoBehaviour
         boardObject = GameObject.Find("Board");
         InitializeBoard();
         InitializePlayers();
-        
-    }
 
-    private bool PointOnWall(Vector3 pos)
-    {
-        return pos.x >= board[0, 0].transform.position.x
-            && pos.x <= board[0, BOARD_SIZE - 1].transform.position.x
-            && pos.y >= board[BOARD_SIZE - 1, 0].transform.position.y
-            && pos.y <= board[0, 0].transform.position.y;
     }
 
     void Update()
-    {
-
+    {   
         if (Input.GetKeyDown(KeyCode.Space))
         {
             wallRotation = !wallRotation;
         }
 
-        Vector3 mousePos = Input.mousePosition;
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(ray, out hit))
-        {
-            
-            Vector3 wallPos = RoundHitPoint(hit.point);
-            if (PointOnWall(wallPos) && wallPresent)
-            {
-                wallPlaceHolder = Instantiate(wall, wallPos, Quaternion.Euler(new Vector3(0, 0, wallRotation ? 90 : 0)));
-                wallPresent = true;
-            }
-            else if (PointOnWall(wallPos))
-            {
-                Vector3 newPos = wallPos;
-                wallPlaceHolder.transform.position = new Vector3(newPos.x , newPos.y, -1);
-            }
-        }
-
-
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 mousePos1 = Input.mousePosition;
-            Ray ray1 = Camera.main.ScreenPointToRay(mousePos1);
+            Vector3 mousePos = Input.mousePosition;
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-            if (Physics.Raycast(ray1, out hit))
+            if (Physics.Raycast(ray, out hit))
             {
-                Vector3 wallPos = RoundHitPoint(hit.point);
-                Instantiate(wall, wallPos, Quaternion.Euler(new Vector3(0, 0, wallRotation ? 90 : 0)));
+                if (hit.collider.gameObject.name.StartsWith("Board"))
+                {
+                    Vector3 wallPos = RoundHitPoint(hit.point);
+                    Instantiate(wall, wallPos, Quaternion.Euler(new Vector3(0, 0, wallRotation ? 90 : 0)));
+                }
             }
         }
+
     }
 
+    /*
+    void CheckGameEnded()
+    {
+        
+        if (player1.transform.position.y - initialPlayer1Pos.y == BOARD_SIZE - 1)
+        {
+            Debug.Log("Player 1 Wins !");
+        }
+        else if (initialPlayer2Pos.y - player2.transform.position.y == BOARD_SIZE - 1)
+        {
+            Debug.Log("Player 2 Wins !");
+        }
+    }
+    */
     
 }

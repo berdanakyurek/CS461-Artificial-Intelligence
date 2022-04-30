@@ -108,4 +108,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f01c774f53e842d4bc6277efbd2c383, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remainingWalls: 0
+  ballPlaceHolder: {fileID: 7191574701752284531, guid: 22ea922916a8f491fba495abaccd0a16, type: 3}
