@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+
 public class GameManager : MonoBehaviour
 {
 
@@ -13,10 +15,13 @@ public class GameManager : MonoBehaviour
     public GameObject player1Prefab, player2Prefab;
     private GameObject player1, player2;
     public GameObject wall;
+
     
+    private bool player1Turn = false;
     public const int BOARD_SIZE = 9;
     public GameObject[,] board = new GameObject[BOARD_SIZE,BOARD_SIZE];
     private Vector3 initialPlayer1Pos, initialPlayer2Pos;
+    private TextMeshProUGUI player1Walls, player2Walls;
     
     private void InitializeBoard()
     {
@@ -48,9 +53,16 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         boardObject = GameObject.Find("Board");
+        
         InitializeBoard();
         InitializePlayers();
 
+    }
+
+    private void Awake()
+    {
+        player1Walls = GameObject.Find("Player1Walls").GetComponent<TextMeshProUGUI>();
+        player2Walls = GameObject.Find("Player2Walls").GetComponent<TextMeshProUGUI>();
     }
 
     void Update()
@@ -71,6 +83,8 @@ public class GameManager : MonoBehaviour
                 {
                     Vector3 wallPos = RoundHitPoint(hit.point);
                     Instantiate(wall, wallPos, Quaternion.Euler(new Vector3(0, 0, wallRotation ? 90 : 0)));
+                    
+                    player1Turn = !player1Turn;
                 }
             }
         }

@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
 
-    private int remainingWalls;
     private RaycastHit hit;
 
-    public bool selected = false;
-
+    public bool selected = false;                                                 
     private bool createPlaceHolder = false;
     public GameObject ballPlaceHolder;
     private GameObject[] directionObjects; //direction placeholder objects
@@ -117,11 +116,6 @@ public class Player : MonoBehaviour
             return hit.collider.gameObject.name.StartsWith(this.gameObject.name);
         }
         return false;
-    }
-
-    public void DecreaseWall()
-    {
-        remainingWalls -= 1;
     }
 
 }
