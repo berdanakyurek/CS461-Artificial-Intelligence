@@ -107,7 +107,10 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             wallRotation = !wallRotation;
-            wallPlaceHolder.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, wallRotation ? 90 : 0));
+            if (wallPlaceHolder)
+            {
+                wallPlaceHolder.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, wallRotation ? 90 : 0));
+            }
         }
 
 
@@ -175,6 +178,19 @@ public class GameManager : MonoBehaviour
             player1Turn = !player1Turn;
             playerTurn.SetText("Turn: " + (player1Turn ? "Player 1" : "Player 2"));
 
+            string tempor = "";
+            foreach (var v in player1Controller.BFS())
+            {
+                tempor = tempor + v;
+            }
+            Debug.Log(tempor + "\n");
+
+            tempor = "";
+            foreach (var v in player2Controller.BFS())
+            {
+                tempor = tempor + v;
+            }
+            Debug.Log(tempor + "\n");
         }
         
         if (player1Controller.HasReachedEnd())

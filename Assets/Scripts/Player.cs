@@ -26,17 +26,272 @@ public class Player : MonoBehaviour
         selected = false;
         createPlaceHolder = false;
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        string playerName = this.gameObject.name.Replace("(Clone)", "");
+        Debug.Log(HasObstacle(new Vector3(0, -1, 0)));
     }
+   
 
     private bool IsMyTurn()
     {
         string playerName = this.gameObject.name.Replace("(Clone)", "");
         return GameObject.Find("PlayerTurn").GetComponent<TextMeshProUGUI>().text.Contains(playerName[playerName.Length -  1]);
     }
-    
-    void Update()
+
+
+
+    public int ShortestDistanceToGoal()
+    {
+        return 0;
+    }
+
+
+    public int Heuristic()
+    {
+        if(this.gameObject.name.Replace("(Clone)", "") == "Player1")
+        {
+            return (int)((4.5 - transform.position.y));
+        }
+        else if (this.gameObject.name.Replace("(Clone)", "") == "Player2")
+        {
+            return (int)((transform.position.y + 3.5));
+        }
+        return 100;
+    }
+
+    public int Heuristic(double y)
+    {
+        if (this.gameObject.name.Replace("(Clone)", "") == "Player1")
+        {
+            return (int)((4.5 - y));
+        }
+        else if (this.gameObject.name.Replace("(Clone)", "") == "Player2")
+        {
+            return (int)((y + 3.5));
+        }
+        return 100;
+    }
+
+
+
+
+
+
+
+    public List<string> BFS()
     {
         
+        Queue<List<string>> liste = new Queue<List<string>>();
+        if (!HasObstacle(transform.position, new Vector3(1,0,0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("R");
+            liste.Enqueue(temp);
+        }
+        if (!HasObstacle(transform.position, new Vector3(-1,0,0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("L");
+            liste.Enqueue(temp);
+        }
+        if (!HasObstacle(transform.position, new Vector3(0,1,0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("U");
+            liste.Enqueue(temp);
+        }
+        if (!HasObstacle(transform.position, new Vector3(0,-1,0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("D");
+            liste.Enqueue(temp);
+        }
+        while (liste.Count != 0)
+        {
+            List<string> element = liste.Dequeue();
+            List<Vector3> visited = new List<Vector3>();
+            var position = transform.position;
+
+            foreach (var v in element)
+            {
+                visited.Add(position);
+                if (v == "R")
+                {
+                    position.x = position.x + 1;
+                }
+                if (v == "L")
+                {
+                    position.x = position.x - 1;
+                }
+                if (v == "U")
+                {
+                    position.y = position.y + 1;
+                }
+                if (v == "D")
+                {
+                    position.y = position.y - 1;
+                }
+            }
+            //visited.Add(position);
+
+            if (Heuristic(position.y) == 0)
+            {
+                return element;
+            }
+
+
+            if (visited.Contains(position))
+            {
+                continue;
+            }
+
+            if (!HasObstacle(position, new Vector3( 1,0,0))   )
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("R");
+                liste.Enqueue(temp);
+            }
+            if (!HasObstacle(position, new Vector3(-1,0,0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("L");
+                liste.Enqueue(temp);
+            }
+            if (!HasObstacle(position, new Vector3(0, 1,0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("U");
+                liste.Enqueue(temp);
+            }
+            if (!HasObstacle(position, new Vector3(0,-1,0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("D");
+                liste.Enqueue(temp);
+            }
+
+
+
+        }
+
+        return new List<string>();
+    }
+
+
+
+
+
+
+
+
+    public List<string> DFS()
+    {
+
+        Stack<List<string>> liste = new Stack<List<string>>();
+        if (!HasObstacle(transform.position, new Vector3(1, 0, 0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("R");
+            liste.Push(temp);
+        }
+        if (!HasObstacle(transform.position, new Vector3(-1, 0, 0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("L");
+            liste.Push(temp);
+        }
+        if (!HasObstacle(transform.position, new Vector3(0, 1, 0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("U");
+            liste.Push(temp);
+        }
+        if (!HasObstacle(transform.position, new Vector3(0, -1, 0)))
+        {
+            List<string> temp = new List<string>();
+            temp.Add("D");
+            liste.Push(temp);
+        }
+        while (liste.Count != 0)
+        {
+            List<string> element = liste.Pop();
+            List<Vector3> visited = new List<Vector3>();
+            var position = transform.position;
+
+            foreach (var v in element)
+            {
+                visited.Add(position);
+                if (v == "R")
+                {
+                    position.x = position.x + 1;
+                }
+                if (v == "L")
+                {
+                    position.x = position.x - 1;
+                }
+                if (v == "U")
+                {
+                    position.y = position.y + 1;
+                }
+                if (v == "D")
+                {
+                    position.y = position.y - 1;
+                }
+            }
+            //visited.Add(position);
+
+            if (Heuristic(position.y) == 0)
+            {
+                return element;
+            }
+
+
+            if (visited.Contains(position))
+            {
+                continue;
+            }
+
+            if (!HasObstacle(position, new Vector3(1, 0, 0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("R");
+                liste.Push(temp);
+            }
+            if (!HasObstacle(position, new Vector3(-1, 0, 0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("L");
+                liste.Push(temp);
+            }
+            if (!HasObstacle(position, new Vector3(0, 1, 0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("U");
+                liste.Push(temp);
+            }
+            if (!HasObstacle(position, new Vector3(0, -1, 0)))
+            {
+                List<string> temp = new List<string>(element);
+                temp.Add("D");
+                liste.Push(temp);
+            }
+
+
+
+        }
+
+        return new List<string>();
+    }
+
+
+
+
+
+    void Update()
+    {
+        //Debug.Log(HasObstacle(new Vector3(initialPos.x, initialPos.y - 1, initialPos.z)));
+        
+
+
         if (gameManager.GameEnded() ||gameManager.GamePaused())
         {
             return;
@@ -102,6 +357,19 @@ public class Player : MonoBehaviour
             return true;
         }
         else if (!Physics.Raycast(transform.position + dir, new Vector3(0,0,1), out hit, 1))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool HasObstacle(Vector3 dir, Vector3 dir1)
+    {
+        if (Physics.Raycast(dir, transform.TransformDirection(dir1), out hit, 1))
+        {
+            return true;
+        }
+        else if (!Physics.Raycast(dir + dir1, new Vector3(0, 0, 1), out hit, 1))
         {
             return true;
         }
