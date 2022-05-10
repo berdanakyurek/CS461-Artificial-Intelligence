@@ -81,6 +81,49 @@ public class GameManager : MonoBehaviour
 
     }
 
+    IEnumerator DoMoves()
+    {
+        Debug.Log("Called !");
+        string tempor = "";
+        List<string> moves = player1Controller.BFS();
+
+        string tem = "";
+        foreach (string m in moves)
+        {
+            tem += m;
+        }
+        Debug.Log("path: " + tem);
+
+
+        foreach (string v in moves)
+        {
+            if (v == "U")
+            {
+                player1Controller.MoveUp();
+            }
+            else if (v == "L")
+            {
+                player1Controller.MoveLeft();
+            }
+            else if (v == "R")
+            {
+                player1Controller.MoveRight();
+            }
+            else if (v == "D")
+            {
+                player1Controller.MoveDown();
+            }
+            yield return new WaitForSeconds(0.25f);
+            tempor = tempor + v;
+        }
+        //Debug.Log(tempor + "\n");
+    }
+
+    public void PawnMovesEvent()
+    {
+        StartCoroutine(DoMoves());
+    }
+
     void Update()
     {
 
@@ -178,19 +221,15 @@ public class GameManager : MonoBehaviour
             player1Turn = !player1Turn;
             playerTurn.SetText("Turn: " + (player1Turn ? "Player 1" : "Player 2"));
 
+            //StartCoroutine(DoMoves());
+            /*
             string tempor = "";
-            foreach (var v in player1Controller.BFS())
-            {
-                tempor = tempor + v;
-            }
-            Debug.Log(tempor + "\n");
-
-            tempor = "";
             foreach (var v in player2Controller.BFS())
             {
                 tempor = tempor + v;
             }
-            Debug.Log(tempor + "\n");
+            */
+            //Debug.Log(tempor + "\n");
         }
         
         if (player1Controller.HasReachedEnd())
