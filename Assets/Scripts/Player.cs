@@ -18,6 +18,12 @@ public class Player : MonoBehaviour
         
     private int playerDirection;
     private int walls;
+    public Vector3 [] endPos = new Vector3 [9]; 
+    public void setEndPos (Vector3 [] endPosPassed ){
+
+         endPos = endPosPassed;
+
+    }
     void Start()
     {
         initialPos = transform.position;
@@ -587,7 +593,7 @@ public class Player : MonoBehaviour
         return this.transform.position;
     }
 
-    public bool HasReachedEnd()
+    public bool HasReachedEnd(int val)
     {
         return Vector3.Distance(initialPos, transform.position) >= 8; 
     }

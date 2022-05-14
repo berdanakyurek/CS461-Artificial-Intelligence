@@ -4,12 +4,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+
 public class GameManager : MonoBehaviour
 {
 
     //horizontal(false) and vertical(true)
     private bool wallRotation = false;
 
+    public Vector3[] endPos01 = new Vector3[9];
+    public Vector3[] endPos02 = new Vector3[9];
+    
     private RaycastHit hit;
     public GameObject boardCube1, boardCube2;
     private GameObject boardObject;
@@ -42,9 +46,17 @@ public class GameManager : MonoBehaviour
             }
 
         }
+        initPos();
         //boardObject.transform.Rotate(new Vector3(0,-20,0));
     }
+    private void initPos (){
+        for (int i = 0; i < BOARD_SIZE; i++){
+            endPos01[i] = new Vector3(i, BOARD_SIZE - 1, 0);
+            endPos02[i] = new Vector3(i, 0, 0);
+        }
 
+    }
+    
     private void InitializePlayers()
     {
         initialPlayer1Pos = board[0, 4].transform.position;
@@ -232,7 +244,7 @@ public class GameManager : MonoBehaviour
             //Debug.Log(tempor + "\n");
         }
         
-        if (player1Controller.HasReachedEnd())
+        if (player1Controller.HasReachedEnd(1))
         {
             gameEndModal.SetActive(true);
             Time.timeScale = 0f;
@@ -240,7 +252,8 @@ public class GameManager : MonoBehaviour
             gameEnded = true;
         }
 
-        if (player2Controller.HasReachedEnd())
+
+        if (player2Controller.HasReachedEnd(2))
         {
             gameEndModal.SetActive(true);
             Time.timeScale = 0f;
