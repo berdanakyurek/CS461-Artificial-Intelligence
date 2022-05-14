@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -178,11 +179,6 @@ public class Player : MonoBehaviour
 
 
 
-
-
-
-
-
     public List<string> DFS()
     {
 
@@ -282,6 +278,146 @@ public class Player : MonoBehaviour
         return new List<string>();
     }
 
+
+    public List<string> AStar()
+        {
+            
+            Queue<List<string>> liste = new Queue<List<string>>();
+            if (!HasObstacle(transform.position, new Vector3(1,0,0)))
+            {
+                List<string> temp = new List<string>();
+                temp.Add("R");
+                liste.Enqueue(temp);
+            }
+            if (!HasObstacle(transform.position, new Vector3(-1,0,0)))
+            {
+                List<string> temp = new List<string>();
+                temp.Add("L");
+                liste.Enqueue(temp);
+            }
+            if (!HasObstacle(transform.position, new Vector3(0,1,0)))
+            {
+                List<string> temp = new List<string>();
+                temp.Add("U");
+                liste.Enqueue(temp);
+            }
+            if (!HasObstacle(transform.position, new Vector3(0,-1,0)))
+            {
+                List<string> temp = new List<string>();
+                temp.Add("D");
+                liste.Enqueue(temp);
+            }
+            while (liste.Count != 0)
+            {
+                List<string> element = liste.Dequeue();
+                List<Vector3> visited = new List<Vector3>();
+                var position = transform.position;
+
+                foreach (var v in element)
+                {
+                    visited.Add(position);
+                    if (v == "R")
+                    {
+                        position.x = position.x + 1;
+                    }
+                    if (v == "L")
+                    {
+                        position.x = position.x - 1;
+                    }
+                    if (v == "U")
+                    {
+                        position.y = position.y + 1;
+                    }
+                    if (v == "D")
+                    {
+                        position.y = position.y - 1;
+                    }
+                }
+                //visited.Add(position);
+
+                if (Heuristic(position.y) == 0)
+                {
+                    return element;
+                }
+
+
+                if (visited.Contains(position))
+                {
+                    continue;
+                }
+
+
+                double hR = 0;
+                double hL = 0;
+                double hU = 0;
+                double hD = 0;
+
+                double minH = 0;
+
+                bool minHeuristicR = false;
+                bool minHeuristicL = false;
+                bool minHeuristicU = false;
+                bool minHeuristicD = false;
+
+                foreach (var v in element)
+                {
+                    visited.Add(position);
+                    if (v == "R")    
+                        {hR = Heuristic(position.y);}
+                        
+                    if (v == "L")    
+                        {hL = Heuristic(position.y);}
+                            
+                    if (v == "U")    
+                        {hU = Heuristic(position.y);}
+                        
+                    if (v == "D")    
+                        {hD = Heuristic(position.y);}
+
+                    
+                    minH = Math.Min(Math.Min(Math.Min(hR, hL) ,hU), hD);
+
+                    if (minH == hR)    
+                        {minHeuristicR = true;}
+                        
+                    if (minH == hL)    
+                        {minHeuristicL = true;}
+                            
+                    if (minH == hU)    
+                        {minHeuristicU = true;}
+                        
+                    if (minH == hD)    
+                        {minHeuristicD = true;}
+                
+                }
+            
+                if (!HasObstacle(position, new Vector3( 1,0,0)) && minHeuristicR == true)
+                {
+                    List<string> temp = new List<string>(element);
+                    temp.Add("R");
+                    liste.Enqueue(temp);
+                }
+                if (!HasObstacle(position, new Vector3(-1,0,0)) && minHeuristicL == true)
+                {
+                    List<string> temp = new List<string>(element);
+                    temp.Add("L");
+                    liste.Enqueue(temp);
+                }
+                if (!HasObstacle(position, new Vector3(0, 1,0)) && minHeuristicU == true)
+                {
+                    List<string> temp = new List<string>(element);
+                    temp.Add("U");
+                    liste.Enqueue(temp);
+                }
+                if (!HasObstacle(position, new Vector3(0,-1,0)) && minHeuristicD == true)
+                {
+                    List<string> temp = new List<string>(element);
+                    temp.Add("D");
+                    liste.Enqueue(temp);
+                }
+            }
+            return new List<string>();
+        }
 
 
 
