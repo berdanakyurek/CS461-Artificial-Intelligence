@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     public GameObject player1Prefab, player2Prefab;
     private Player player1Controller, player2Controller;
     public GameObject wall;
-    public GameObject gameEndModal, winStatus, pauseModal;
+    public GameObject gameEndModal, winStatus, pauseModal, searchMethodModal;
     
     private bool player1Turn = true;
     public const int BOARD_SIZE = 9;
@@ -93,9 +93,8 @@ public class GameManager : MonoBehaviour
 
     }
 
-    IEnumerator DoMoves()
+    IEnumerator DoBFSMoves()
     {
-        Debug.Log("Called !");
         string tempor = "";
         List<string> moves = player1Controller.BFS();
 
@@ -104,7 +103,40 @@ public class GameManager : MonoBehaviour
         {
             tem += m;
         }
-        Debug.Log("path: " + tem);
+
+        foreach (string v in moves)
+        {
+            if (v == "U")
+            {
+                player1Controller.MoveUp();
+            }
+            else if (v == "L")
+            {
+                player1Controller.MoveLeft();
+            }
+            else if (v == "R")
+            {
+                player1Controller.MoveRight();
+            }
+            else if (v == "D")
+            {
+                player1Controller.MoveDown();
+            }
+            yield return new WaitForSeconds(0.25f);
+            tempor = tempor + v;
+        }
+    }
+
+    IEnumerator DoDFSMoves()
+    {
+        string tempor = "";
+        List<string> moves = player1Controller.DFS();
+
+        string tem = "";
+        foreach (string m in moves)
+        {
+            tem += m;
+        }
 
 
         foreach (string v in moves)
@@ -128,18 +160,64 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
             tempor = tempor + v;
         }
-        //Debug.Log(tempor + "\n");
     }
 
-    public void PawnMovesEvent()
+    IEnumerator DoAStarMoves()
     {
-        StartCoroutine(DoMoves());
+        string tempor = "";
+        List<string> moves = player1Controller.AStar();
+
+        string tem = "";
+        foreach (string m in moves)
+        {
+            tem += m;
+        }
+        Debug.Log("a star path: " + tem);
+
+
+        foreach (string v in moves)
+        {
+            if (v == "U")
+            {
+                player1Controller.MoveUp();
+            }
+            else if (v == "L")
+            {
+                player1Controller.MoveLeft();
+            }
+            else if (v == "R")
+            {
+                player1Controller.MoveRight();
+            }
+            else if (v == "D")
+            {
+                player1Controller.MoveDown();
+            }
+            yield return new WaitForSeconds(0.25f);
+            tempor = tempor + v;
+        }
+    }
+
+    public void BFSEvent()
+    {
+        CloseSearchMethodModal();
+        StartCoroutine(DoBFSMoves());
+    }
+    public void DFSEvent()
+    {
+        CloseSearchMethodModal();
+        StartCoroutine(DoDFSMoves());
+    }
+    public void AStarEvent()
+    {
+        CloseSearchMethodModal();
+        StartCoroutine(DoAStarMoves());
     }
 
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && Time.timeScale != 0.0f)
         {
             if (!gamePaused)
             {
@@ -231,7 +309,7 @@ public class GameManager : MonoBehaviour
                 player2Walls.SetText("Player 2: " + player1Controller.GetWallCount().ToString());
             }
             player1Turn = !player1Turn;
-            playerTurn.SetText("Turn: " + (player1Turn ? "Player 1" : "Player 2"));
+            playerTurn.SetText((player1Turn ? "Player 1" : "Player 2"));
 
             //StartCoroutine(DoMoves());
             /*
@@ -271,7 +349,7 @@ public class GameManager : MonoBehaviour
     public void ChangeTurn()
     {
         this.GetComponent<GameManager>().player1Turn = !player1Turn;
-        playerTurn.SetText("Turn: " + (player1Turn ? "Player 1" : "Player 2"));
+        playerTurn.SetText((player1Turn ? "Player 1" : "Player 2"));
     }
 
     public void ReloadGame()
@@ -294,5 +372,19 @@ public class GameManager : MonoBehaviour
         gamePaused = false;
         Time.timeScale = 1.0f;
         pauseModal.SetActive(false);
+    }
+
+    public void OpenSearchMethodModal()
+    {
+        gamePaused = true;
+        Time.timeScale = 0.0f;
+        searchMethodModal.SetActive(true);
+    }
+
+    public void CloseSearchMethodModal()
+    {
+        gamePaused = false;
+        Time.timeScale = 1.0f;
+        searchMethodModal.SetActive(false);
     }
 }
