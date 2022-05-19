@@ -81,9 +81,6 @@ public class GameManager : MonoBehaviour
         player2Controller = GameObject.Find("Player2(Clone)").GetComponent<Player>();
         gameEnded = false;
         gamePaused = false;
-        wallPlaceholderOnBoard = false;
-
-        
     }
 
     private void Awake()
@@ -172,7 +169,6 @@ public class GameManager : MonoBehaviour
         {
             tem += m;
         }
-        Debug.Log("a star path: " + tem);
 
 
         foreach (string v in moves)
@@ -216,7 +212,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Escape) && Time.timeScale != 0.0f)
         {
             if (!gamePaused)
@@ -310,16 +305,6 @@ public class GameManager : MonoBehaviour
             }
             player1Turn = !player1Turn;
             playerTurn.SetText((player1Turn ? "Player 1" : "Player 2"));
-
-            //StartCoroutine(DoMoves());
-            /*
-            string tempor = "";
-            foreach (var v in player2Controller.BFS())
-            {
-                tempor = tempor + v;
-            }
-            */
-            //Debug.Log(tempor + "\n");
         }
         
         if (player1Controller.HasReachedEnd(1))
@@ -386,5 +371,77 @@ public class GameManager : MonoBehaviour
         gamePaused = false;
         Time.timeScale = 1.0f;
         searchMethodModal.SetActive(false);
+    }
+
+    public bool IsWallPositionValid(Vector3 pos, bool rotation)
+    {
+        /* rotation:
+         * true -> vertical
+         * false -> horizontal    
+         */
+        Vector3 wallPos = RoundHitPoint(pos);
+        bool onBoard = Physics.Raycast(wallPos + (rotation ? Vector3.up : Vector3.left), new Vector3(0, 0, 1), out hit, 1) &&
+               Physics.Raycast(wallPos + (rotation ? Vector3.down : Vector3.right), new Vector3(0, 0, 1), out hit, 1);
+
+
+        bool nearWall = false;
+
+        Vector3[] horizontalPositions = new Vector3[] {
+            new Vector3(wallPos.x + 1, wallPos.y, wallPos.z),
+            new Vector3(wallPos.x - 1, wallPos.y, wallPos.z),
+        };
+        Vector3[] verticalPositions = new Vector3[] {
+            new Vector3(wallPos.x, wallPos.y + 1, wallPos.z),
+            new Vector3(wallPos.x, wallPos.y - 1, wallPos.z),
+        };
+
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Wall"))
+        {
+            foreach (Vector3 h in horizontalPositions)
+            {
+                if (go.transform.position == h && !rotation)
+                {
+                    nearWall = true;
+                    break;
+                }
+            }
+            foreach (Vector3 v in verticalPositions)
+            {
+                if (go.transform.position == v && rotation)
+                {
+                    nearWall = true;
+                    break;
+                }
+            }
+
+        }
+
+        return (onBoard && !nearWall);
+    }
+
+    public void PlaceWall(Vector3 pos, bool rotation)
+    {
+        /* rotation:
+         * true -> vertical
+         * false -> horizontal    
+         */
+        if (IsWallPositionValid(pos, rotation))
+        {
+            Vector3 wallPos = RoundHitPoint(pos);
+            Instantiate(wall, wallPos, Quaternion.Euler(new Vector3(0, 0, rotation ? 90 : 0)));
+        }
+    }
+
+    public void RemoveWall(Vector3 pos)
+    {
+        Vector3 wallPos = RoundHitPoint(pos);
+        foreach(GameObject go in GameObject.FindGameObjectsWithTag("Wall"))
+        {
+            if (go.transform.position == wallPos)
+            {
+                Destroy(go);
+                break;
+            }
+        }
     }
 }

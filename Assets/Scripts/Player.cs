@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
         createPlaceHolder = false;
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         string playerName = this.gameObject.name.Replace("(Clone)", "");
-        Debug.Log(HasObstacle(new Vector3(0, -1, 0)));
     }
    
 
@@ -430,10 +429,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log(HasObstacle(new Vector3(initialPos.x, initialPos.y - 1, initialPos.z)));
-        
-
-
         if (gameManager.GameEnded() ||gameManager.GamePaused())
         {
             return;
@@ -595,9 +590,6 @@ public class Player : MonoBehaviour
 
     public bool HasReachedEnd(int val)
     {
-        return Vector3.Distance(initialPos, transform.position) >= 8; 
+        return Math.Abs(initialPos.y - transform.position.y) >= 8;
     }
-
-
-
 }
