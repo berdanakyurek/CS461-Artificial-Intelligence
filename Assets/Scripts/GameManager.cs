@@ -323,7 +323,16 @@ public class GameManager : MonoBehaviour
             winStatus.GetComponent<TextMeshProUGUI>().SetText("Player 2 Wins !");
             gameEnded = true;
         }
+        
+        if (player2Controller.IsMyTurn())
+        {
+            player2Controller.Greedy();
+
+            ChangeTurn();
+        }
+        
     }
+
 
 
     public bool GetTurn()
@@ -372,6 +381,31 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         searchMethodModal.SetActive(false);
     }
+    public int EvaluationFunction()
+    {
+        int tmp1 = player1Controller.BFS().Count;
+        int tmp2 = player2Controller.BFS().Count;
+        Debug.Log(tmp2);
+        if (tmp1 == 0 || tmp2 == 0)
+        {
+            return -10000;
+        }
+        if (player1Controller.IsMyTurn())
+        {
+            return tmp1 - tmp2;
+
+        }
+        else if (player1Controller.IsMyTurn())
+        {
+            return tmp2 - tmp1;
+        }
+        else
+        {
+            return -1000;
+        }
+
+    }
+
 
     public bool IsWallPositionValid(Vector3 pos, bool rotation)
     {

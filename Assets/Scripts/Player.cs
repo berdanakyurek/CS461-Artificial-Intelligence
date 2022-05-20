@@ -37,7 +37,137 @@ public class Player : MonoBehaviour
     }
    
 
-    private bool IsMyTurn()
+    public Vector3 BestWallTrue()
+    {
+        if (IsMyTurn())
+        {
+            float BestX = -100;
+            float BestY = -100;
+            double bestEvaluation = -100;
+            float z = -1;
+            for (float x = (float)-3; x<=(float)4; x++)
+            {
+                for (float y = (float)-4; y <= (float)3; y++)
+                {
+                    if (gameManager.IsWallPositionValid(new Vector3(x, y, z), true))
+                    {
+                        gameManager.PlaceWall(new Vector3(x, y, z), true);
+                        int tmp = gameManager.EvaluationFunction();
+                        if (tmp == -10000)
+                        {
+                            gameManager.RemoveWall(new Vector3(x, y, z));
+                            continue;
+                        }
+                        if (bestEvaluation < tmp)
+                        {
+                            bestEvaluation = tmp;
+                            BestX = x;
+                            BestY = y;
+                        }
+                        gameManager.RemoveWall(new Vector3(x, y, z));
+                    }
+                    
+
+                }
+            }
+            Debug.Log( "uytuyfg \n");
+            return new Vector3(BestX, BestY, z);
+        }
+        return new Vector3(-100, -100, -100);
+    }
+    public Vector3 BestWallFalse()
+    {
+        if (IsMyTurn())
+        {
+            float BestX = -100;
+            float BestY = -100;
+            double bestEvaluation = -100;
+            float z = -1;
+            for (float y = (float)-3; y <= (float)4; y++)
+            {
+                for (float x = (float)-4; x <= (float)3; x++)
+                {
+                    
+                    if (gameManager.IsWallPositionValid(new Vector3(x, y, z), false))
+                    {
+                        gameManager.PlaceWall(new Vector3(x, y, z), false);
+                        int tmp = gameManager.EvaluationFunction();
+                        if (tmp == -10000)
+                        {
+                            gameManager.RemoveWall(new Vector3(x, y, z));
+                            continue;
+                        }
+                        if (bestEvaluation < tmp)
+                        {
+                            bestEvaluation = tmp;
+                            BestX = x;
+                            BestY = y;
+
+                        }
+                        gameManager.RemoveWall(new Vector3(x, y, z));
+
+                    }
+
+
+                }
+            }
+            return new Vector3(BestX, BestY, z);
+        }
+        return new Vector3(-100, -100, -100);
+    }
+
+    public void Greedy()
+    {
+        Vector3 tmp1 = BestWallFalse();
+        Vector3 tmp2 = BestWallTrue();
+
+        gameManager.PlaceWall(tmp1, false);
+        int eval1 = gameManager.EvaluationFunction();
+        gameManager.RemoveWall(tmp1);
+
+        gameManager.PlaceWall(tmp2, true);
+        int eval2 = gameManager.EvaluationFunction();
+        gameManager.RemoveWall(tmp2);
+
+        int evalmove = gameManager.EvaluationFunction() + 1;
+        
+
+
+
+        if (eval1 > eval2 && eval1> evalmove && GetWallCount() > 0)
+        {
+            gameManager.PlaceWall(tmp1, false);
+            DecreaseWall();
+        }
+        else if (eval2 >= eval1 && eval2 > evalmove && GetWallCount() > 0)
+        {
+            gameManager.PlaceWall(tmp2, true);
+            DecreaseWall();
+        }else {
+            string str = BFS()[0];
+
+            if (str == "U")
+            {
+                MoveUp();
+            }
+            else if (str == "D")
+            {
+                MoveDown();
+            }
+            else if (str == "L")
+            {
+                MoveLeft();
+            }
+            else if (str == "R")
+            {
+                MoveRight();
+            }
+        }
+
+
+    }
+
+    public bool IsMyTurn()
     {
         string playerName = this.gameObject.name.Replace("(Clone)", "");
         return GameObject.Find("PlayerTurn").GetComponent<TextMeshProUGUI>().text.Contains(playerName[playerName.Length -  1]);
